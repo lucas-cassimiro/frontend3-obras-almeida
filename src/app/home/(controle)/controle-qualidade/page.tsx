@@ -42,19 +42,28 @@ type ProductivityData = {
   created_at: Date | string;
 };
 
-export default function QualityControl() {
-  const [selectValue, setSelectValue] = useState("");
-  console.log(selectValue);
-  const [dateValue, setDateValue] = useState("");
-  console.log(dateValue);
+const nonconformity = [
+  {
+    label: "Sim",
+    value: "Sim",
+  },
+  {
+    label: "Não",
+    value: "Não",
+  },
+];
 
+export default function QualityControl() {
+  const [workId, setWorkId] = useState<string>("");
+  const [presenceDate, setPresenceDate] = useState<string>("");
   const [productivityData, setProductivityData] = useState<ProductivityData[]>(
     []
   );
+  const [works, setWorks] = useState<WorkData[]>([]);
+  const [result, setResult] = useState<string[]>([]);
+  const [action, setAction] = useState<string[]>([]);
 
   console.log(productivityData);
-
-  const [works, setWorks] = useState<WorkData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,19 +75,17 @@ export default function QualityControl() {
   }, []);
 
   const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectValue(event.target.value);
+    setWorkId(event.target.value);
   };
 
   const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDateValue(event.target.value);
+    setPresenceDate(event.target.value);
   };
 
-  const getDados = async (event: MouseEventHandler<HTMLButtonElement>) => {
-    // event.preventDefault();
-
+  const getDados = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/productivityControl/?select=${selectValue}&data=${dateValue}`
+        `http://localhost:3333/productivityControl/?select=${workId}&data=${presenceDate}`
       );
 
       if (!response.ok) {
@@ -88,9 +95,55 @@ export default function QualityControl() {
       }
 
       const data = await response.json();
-      console.log(data);
       setProductivityData(data);
       toast.success("Dados carregados com sucesso!");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleResultadoChange = (value: string, index: number) => {
+    const novosResultados = [...result];
+    novosResultados[index] = value;
+    setResult(novosResultados);
+  };
+
+  const handleAcaoChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const novasAcoes = [...action];
+    novasAcoes[index] = event.target.value;
+    setAction(novasAcoes);
+  };
+
+  const handleRegisterControl = async () => {
+    const dadosRegistrados = productivityData.map((data, index) => ({
+      id: data.id,
+      resultado: result[index],
+      acao: action[index],
+    }));
+
+    console.log(dadosRegistrados);
+
+    try {
+      const url = "http://localhost:3333/qualityControl";
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dadosRegistrados),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(error.message);
+        throw new Error(error.message);
+      }
+
+      toast.success("Dados registrados com sucesso!");
     } catch (error) {
       console.error(error);
     }
@@ -120,9 +173,12 @@ export default function QualityControl() {
               </Select>
             </div>
 
-            <input type="date" value={dateValue} onChange={handleChangeDate} />
+            <input
+              type="date"
+              value={presenceDate}
+              onChange={handleChangeDate}
+            />
           </div>
-          {/* ta dando erro mas funciona */}
           <Button
             color="success"
             type="submit"
@@ -146,7 +202,7 @@ export default function QualityControl() {
                 </tr>
               </thead>
               <tbody>
-                {productivityData.map((data) => (
+                {productivityData.map((data, index) => (
                   <tr key={data.id}>
                     <td>{data.employees.alternative_name}</td>
                     <td>{data.place}</td>
@@ -154,19 +210,38 @@ export default function QualityControl() {
                     <td>{data.subservices.subservice}</td>
                     <td>{data.quantity}</td>
                     <td>
-                      <Input placeholder="Digite o resultado" />
+                      <Select
+                        label="Alguma inconformidade?"
+                        onChange={(event) =>
+                          handleResultadoChange(event.target.value, index)
+                        }
+                        value={result[index] || ""}
+                      >
+                        {nonconformity.map((option) => (
+                          <SelectItem value={option.value} key={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
                     </td>
                     <td>
-                      <Input placeholder="Digite a ação" />
+                      <Input
+                        placeholder="Informe a ação"
+                        value={action[index] || ""}
+                        onChange={(event) => handleAcaoChange(event, index)}
+                        className="w-[100px]"
+                        disabled={result[index] === "Completo"}
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <Button
-              type="submit"
+              type="button"
               color="success"
               className="mt-10 w-60 text-base font-medium"
+              onClick={handleRegisterControl}
             >
               Registrar controle
             </Button>

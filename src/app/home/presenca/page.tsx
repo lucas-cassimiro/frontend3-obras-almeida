@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  FieldErrors,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,32 +9,17 @@ import { useHookFormMask, useInputMask } from "use-mask-input";
 import { getEmployee, getWorksAddress } from "@/services/api";
 import { EmployeeData } from "@/types/EmployeeType";
 import { WorkData } from "@/types/WorkType";
-import {
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Input,
-  Select,
-  SelectItem,
-} from "@nextui-org/react";
+
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from "react-toastify";
-
-const formatDate = (dateString: string) => {
-  const [day, month, year] = dateString.split("/");
-  const formatDate = `${year}-${month}-${day}`;
-  return formatDate;
-};
-
-const formatTime = (timeString: string) => {
-  const [hour, minute] = timeString.split(":");
-  return `${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
-};
+import { formatDate } from "@/utils/formatDate";
+import { formatTime } from "@/utils/formatTime";
 
 const registerPresenceFormSchema = z.object({
   presenceDate: z.string().nonempty("Campo obrigatório."),
   work: z.coerce.number(),
-  employees: z.array(z.coerce.number()), // Array de IDs de funcionários
-  arrival_time: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/), // Hora de chegada
+  employees: z.array(z.coerce.number()),
+  arrival_time: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
 });
 
 type registerPresenceFormData = z.infer<typeof registerPresenceFormSchema>;

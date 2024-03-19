@@ -12,12 +12,7 @@ import { PositionsData } from "@/types/PositionsType";
 import { ContractsData } from "@/types/ContractsType";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { toast } from "react-toastify";
-
-const formatDate = (dateString: string) => {
-  const [day, month, year] = dateString.split("/");
-  const formatDate = `${year}-${month}-${day}`;
-  return formatDate;
-};
+import { formatDate } from "@/utils/formatDate";
 
 const createEmployeeFormSchema = z.object({
   employee: z.object({
@@ -54,6 +49,7 @@ export default function Employee() {
   });
 
   const [contracts, setContracts] = useState<ContractsData[]>([]);
+  console.log(contracts);
   const [payments, setPayments] = useState<PaymentsData[]>([]);
   const [positions, setPositions] = useState<PositionsData[]>([]);
 
