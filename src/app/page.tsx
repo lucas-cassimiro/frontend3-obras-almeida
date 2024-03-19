@@ -7,9 +7,9 @@ import { z } from "zod";
 import logo from "@/assets/logo.png";
 
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+// import { AuthContext } from "@/contexts/AuthContext";
 
 const signInFormSchema = z.object({
   username: z.string().nonempty("O nome de usuário é obrigatório."),
@@ -40,12 +40,12 @@ export default function Login() {
     resolver: zodResolver(signInFormSchema),
   });
 
-  const { signIn } = useContext(AuthContext);
+  // const { signIn } = useContext(AuthContext);
 
-  async function handleSignIn(data: signInFormData) {
-    await signIn(data);
-    reset();
-  }
+  // async function handleSignIn(data: signInFormData) {
+  //   await signIn(data);
+  //   reset();
+  // }
 
   const onError: SubmitErrorHandler<signInFormData> = (errors) =>
     console.log(errors);
@@ -56,7 +56,7 @@ export default function Login() {
         <div className="w-[30rem] h-[25rem] p-[2.1875rem] bg-[#181920] rounded-[10px]">
           <form
             className="flex flex-col w-full"
-            onSubmit={handleSubmit(handleSignIn, onError)}
+            // onSubmit={handleSubmit(handleSignIn, onError)}
           >
             {/* <Image src={logo} alt="Logo da empresa" className="w-[100px] h-[200px]"/> */}
             <input

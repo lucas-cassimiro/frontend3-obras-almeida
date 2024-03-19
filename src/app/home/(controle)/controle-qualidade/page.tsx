@@ -73,7 +73,7 @@ export default function QualityControl() {
     setDateValue(event.target.value);
   };
 
-  const getDados = async (event: MouseEventHandler<HTMLButtonElement>) => {
+  const getDados: MouseEventHandler<HTMLButtonElement> = async (event) => {
     // event.preventDefault();
 
     try {

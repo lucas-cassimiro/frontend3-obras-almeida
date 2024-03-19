@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { AuthProvider } from "@/contexts/AuthContext";
+// import { AuthProvider } from "@/contexts/AuthContext";
 import TanstackProvider from "@/providers/TanstackProvider";
 import { MacroProvider } from "@/contexts/MacroservicesContext";
 import { SubserviceProvider } from "@/contexts/SubservicesContext";
@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import NextUiProvider from "@/providers/NextUiProvider";
 import ButtonMenu from "@/components/ButtonMenu";
+import { ConstructionProvider } from "@/contexts/ConstructionsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,19 +39,19 @@ export default function HomeLayout({
 
   return (
     <section className="flex relative">
-      {/* <AuthProvider> */}
         <NextUiProvider>
           <TanstackProvider>
-            <MacroProvider>
-              <SubserviceProvider>
-                <ButtonMenu />
-                {children}
-                <ToastContainer autoClose={2000} />
-              </SubserviceProvider>
-            </MacroProvider>
+            <ConstructionProvider>
+              <MacroProvider>
+                <SubserviceProvider>
+                  <ButtonMenu />
+                    {children}
+                  <ToastContainer autoClose={2000} />
+                </SubserviceProvider>
+              </MacroProvider>
+            </ConstructionProvider>
           </TanstackProvider>
         </NextUiProvider>
-      {/* </AuthProvider> */}
     </section>
   );
 }
