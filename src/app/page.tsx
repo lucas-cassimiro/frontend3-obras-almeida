@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { Button, Input } from "@nextui-org/react";
 
 const signInFormSchema = z.object({
   username: z.string().nonempty("O nome de usuário é obrigatório."),
@@ -53,39 +54,42 @@ export default function Login() {
   return (
     <div className="bg-[#1B1F27] overflow-hidden">
       <div className="flex h-screen justify-center items-center">
-        <div className="w-[30rem] h-[25rem] p-[2.1875rem] bg-[#181920] rounded-[10px]">
+        <div className="w-[30rem] h-[16rem] p-[2.1875rem] bg-[#181920] rounded-[10px] max-h-[16rem]">
           <form
-            className="flex flex-col w-full"
+            className="flex flex-col w-full gap-5"
             onSubmit={handleSubmit(handleSignIn, onError)}
           >
             {/* <Image src={logo} alt="Logo da empresa" className="w-[100px] h-[200px]"/> */}
-            <input
+            <Input
               type="text"
+              variant="bordered"
               placeholder="Nome de usuário"
-              className={`${
-                errors.username ? "bg-[#F2DEDE]" : ""
-              } mt-3 bg-[#252A34] border-none h-[2.8125rem] outline-none rounded-lg placeholder:text-[#CBD0F7]`}
               {...register("username")}
+              className="text-white"
+              isInvalid={errors.username ? true : false}
+              errorMessage={errors.username?.message}
+              isClearable
+              isRequired
             />
-            {errors.username && (
-              <span className="text-[#F31260] text-sm mt-2">
-                {errors.username.message}
-              </span>
-            )}
-            <input
+
+            <Input
               type="password"
+              variant="bordered"
               placeholder="Digite sua senha"
-              className="mt-3 bg-[#252A34] border-none h-[2.8125rem] outline-none rounded-lg placeholder:text-[#CBD0F7]"
+              className="text-white"
               {...register("password_hash")}
+              isInvalid={errors.password_hash ? true : false}
+              errorMessage={errors.password_hash?.message}
+              isClearable
+              isRequired
             />
-            {errors.password_hash && (
-              <span className="text-[#F31260] text-sm mt-2">
-                {errors.password_hash.message}
-              </span>
-            )}
-            <button className="mt-3 bg-[#5568FE] border-none h-[2.8125rem] outline-none rounded-lg text-[#CBD0F7] uppercase text-xl font-bold">
+            <Button
+              isLoading={isSubmitting}
+              type="submit"
+              className="bg-[#5568FE] text-white"
+            >
               Entrar
-            </button>
+            </Button>
           </form>
         </div>
       </div>
