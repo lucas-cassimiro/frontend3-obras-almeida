@@ -1,18 +1,11 @@
 "use client";
 
-import { useSub } from "@/contexts/SubservicesContext";
 import { getWorksAddress } from "@/services/api";
 import { WorkData } from "@/types/WorkType";
 import { Button, Select, SelectItem, Input } from "@nextui-org/react";
 
-import { useMutation } from "@tanstack/react-query";
-
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-// const mutation = useMutation({
-//   mutationFn: () =>
-// })
 
 interface RowData {
   selectedPlace: any;
@@ -23,9 +16,61 @@ interface RowData {
   weight: string;
 }
 
+type EmployeeInWorkData = {
+  id: string;
+  obra_id: number;
+  employee_id: number;
+  presence_date: Date | string;
+  arrival_time: Date;
+  employees: {
+    id: number;
+    ra: string;
+    first_name: string;
+    last_name: string;
+    alternative_name: string;
+    admission_date: string;
+    salary: string;
+    lunch_cost: string;
+    ticket_cost: string;
+    payment_id: number;
+    contract_id: number;
+    position_id: number;
+    dinner: string;
+    lunch: string;
+    total_cost: string;
+  };
+};
+
+type Subservice = {
+  id: number;
+  sub_id: number;
+  quantity: number;
+  weight: number;
+  subservices: {
+    id: number;
+    macro_id: number;
+    unit_id: number;
+    subservice: string;
+    macroservices: {
+      id: number;
+      macroservice: string;
+    };
+  };
+};
+
+type Ambiente = {
+  ambient_name: string;
+  subservice: Subservice[];
+};
+
+type WorkManagementData = {
+  name: string;
+  ambiente: Ambiente[];
+};
+
 export default function ProductivityController() {
-  const [selectValue, setSelectValue] = useState("");
-  const [dateValue, setDateValue] = useState("");
+  const [workId, setWorkId] = useState<string>("");
+  const [presenceDate, setPresenceDate] = useState<string>("");
 
   const [works, setWorks] = useState<WorkData[]>([]);
 
@@ -38,16 +83,16 @@ export default function ProductivityController() {
   console.log(rowData);
 
   const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectValue(event.target.value);
+    setWorkId(event.target.value);
   };
 
   const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDateValue(event.target.value);
+    setPresenceDate(event.target.value);
   };
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getWorksAddress();
+      const data: WorkData[] = await getWorksAddress();
       setWorks(data);
     }
 
@@ -57,18 +102,19 @@ export default function ProductivityController() {
   const getDados = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/presence/?select=${selectValue}&data=${dateValue}`
+        `http://localhost:3333/presence/?select=${workId}&data=${presenceDate}`
       );
 
       if (!response.ok) {
         const error = await response.json();
         toast.error(error.message);
+        // toast.error("Informe a obra e a data");
         throw new Error(error.message);
       }
 
       const data = await response.json();
-      console.log(data);
       setSelectData(data);
+
       toast.success("Dados carregados com sucesso!");
     } catch (error) {
       console.error(error);
@@ -77,20 +123,22 @@ export default function ProductivityController() {
 
   const updateRowData = (
     index: number,
-    selectedPlace: string,
-    selectedAmbient: string,
+    employees: any,
+    place: string,
+    ambient: string,
     selectedMacroService: string,
-    selectedSubServiceId: number,
+    subId: number,
     quantity: string,
     weight: string
   ) => {
     const newDataObject = {
-      selectValue,
-      dateValue,
-      selectedPlace,
-      selectedAmbient,
+      workId,
+      presenceDate,
+      employees,
+      place,
+      ambient,
       selectedMacroService,
-      selectedSubServiceId,
+      subId,
       quantity,
       weight,
     };
@@ -113,12 +161,17 @@ export default function ProductivityController() {
     try {
       const url = "http://localhost:3333/productivityControl/";
 
+      const modifiedRowData = rowData.map((row: any) => {
+        const { selectedMacroService, ...rowDataWithoutMacroService } = row;
+        return rowDataWithoutMacroService;
+      });
+
       const request = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(rowData),
+        body: JSON.stringify(modifiedRowData),
       });
 
       if (!request.ok) {
@@ -142,32 +195,33 @@ export default function ProductivityController() {
     index: number;
     updateRowData: (
       index: number,
-      selectedPlace: string,
-      selectedAmbient: string,
+      employees: any,
+      place: string,
+      ambient: string,
       selectedMacroService: string,
-      selectedSubServiceId: number,
+      subId: number,
       quantity: string,
       weight: string
     ) => void;
   }) => {
-    const [selectedPlace, setSelectedPlace] = useState<string>("");
-    const [selectedAmbient, setSelectedAmbient] = useState<string>("");
+    const [place, setPlace] = useState<string>("");
+    const [ambient, setAmbient] = useState<string>("");
     const [selectedMacroService, setSelectedMacroService] =
       useState<string>("");
-    const [selectedSubServiceId, setSelectedSubServiceId] = useState<number>(0);
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(0);
-
+    const [subId, setSubId] = useState<number>(0);
     const [quantity, setQuantity] = useState<string>("");
     const [weight, setWeight] = useState<string>("");
+    const [employeeArray, setEmployeeArray] = useState<any[]>([]);
+    console.log(employeeArray);
 
     const handleSelectPlace = (event: ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
-      setSelectedPlace(value);
+      setPlace(value);
     };
 
     const handleSelectAmbient = (event: ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
-      setSelectedAmbient(value);
+      setAmbient(value);
     };
 
     const handleSelectMacroService = (
@@ -179,7 +233,7 @@ export default function ProductivityController() {
 
     const handleSelectSubService = (event: ChangeEvent<HTMLSelectElement>) => {
       const id = parseInt(event.target.value);
-      setSelectedSubServiceId(id);
+      setSubId(id);
     };
 
     const handleQuantityChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -192,13 +246,23 @@ export default function ProductivityController() {
       setWeight(value);
     };
 
+    useEffect(() => {
+      setEmployeeArray((prevData) => {
+        const newData = [...prevData];
+        newData[index] = { employee_id: employee.employees.id };
+        return newData;
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleUpdateRowData = () => {
       updateRowData(
         index,
-        selectedPlace,
-        selectedAmbient,
+        employeeArray[index].employee_id,
+        place,
+        ambient,
         selectedMacroService,
-        selectedSubServiceId,
+        subId,
         quantity,
         weight
       );
@@ -208,11 +272,7 @@ export default function ProductivityController() {
       <tr className="flex justify-between w-full">
         <td>{employee.employees.alternative_name}</td>
         <td>
-          <select
-            className="w-48"
-            value={selectedPlace}
-            onChange={handleSelectPlace}
-          >
+          <select className="w-48" value={place} onChange={handleSelectPlace}>
             <option value="">Selecione uma opção</option>
             {selectData?.workManagement.map((work: any) => (
               <option key={work.id} value={work.name}>
@@ -224,14 +284,14 @@ export default function ProductivityController() {
         <td>
           <select
             className="w-48"
-            value={selectedAmbient}
+            value={ambient}
             onChange={handleSelectAmbient}
-            disabled={!selectedPlace}
+            disabled={!place}
           >
             <option value="">Selecione uma opção</option>
-            {selectedPlace &&
+            {place &&
               selectData?.workManagement
-                .find((work: any) => work.name === selectedPlace)
+                .find((work: any) => work.name === place)
                 ?.ambiente.map((amb: any) => amb.ambient_name)
                 .filter(
                   (value: any, index: any, self: any) =>
@@ -249,15 +309,13 @@ export default function ProductivityController() {
             className="w-48"
             value={selectedMacroService}
             onChange={handleSelectMacroService}
-            disabled={!selectedAmbient}
+            disabled={!ambient}
           >
             <option value="">Selecione uma opção</option>
-            {selectedAmbient &&
+            {ambient &&
               selectData?.workManagement
-                .find((work: any) => work.name === selectedPlace)
-                ?.ambiente.find(
-                  (amb: any) => amb.ambient_name === selectedAmbient
-                )
+                .find((work: any) => work.name === place)
+                ?.ambiente.find((amb: any) => amb.ambient_name === ambient)
                 ?.subservice.map(
                   (sub: any) => sub.subservices.macroservices.macroservice
                 )
@@ -275,17 +333,15 @@ export default function ProductivityController() {
         <td>
           <select
             className="w-48"
-            value={selectedSubServiceId}
+            value={subId}
             onChange={handleSelectSubService}
             disabled={!selectedMacroService}
           >
             <option value={0}>Selecione uma opção</option>
             {selectedMacroService &&
               selectData?.workManagement
-                .find((work: any) => work.name === selectedPlace)
-                ?.ambiente.find(
-                  (amb: any) => amb.ambient_name === selectedAmbient
-                )
+                .find((work: any) => work.name === place)
+                ?.ambiente.find((amb: any) => amb.ambient_name === ambient)
                 ?.subservice.filter(
                   (sub: any) =>
                     sub.subservices.macroservices.macroservice ===
@@ -307,7 +363,7 @@ export default function ProductivityController() {
         </td>
         <td>
           <Input
-            type="text"
+            type="number"
             placeholder="Digite a quantidade"
             value={quantity}
             onChange={handleQuantityChange}
@@ -315,15 +371,14 @@ export default function ProductivityController() {
         </td>
         <td>
           <Input
-            type="text"
+            type="number"
             placeholder="Digite o peso"
             value={weight}
             onChange={handleWeightChange}
           />
         </td>
-        <td>
-          <Button onClick={handleUpdateRowData}>Salvar</Button>
-        </td>
+
+        <Button onClick={handleUpdateRowData}>Salvar</Button>
       </tr>
     );
   };
@@ -340,6 +395,7 @@ export default function ProductivityController() {
               <label htmlFor="work">Obra:</label>
               <Select
                 id="work"
+                isRequired
                 onChange={handleChangeSelect}
                 className="w-64"
                 placeholder="Selecione uma obra"
@@ -352,7 +408,11 @@ export default function ProductivityController() {
               </Select>
             </div>
 
-            <input type="date" value={dateValue} onChange={handleChangeDate} />
+            <input
+              type="date"
+              value={presenceDate}
+              onChange={handleChangeDate}
+            />
           </div>
           <Button
             color="success"
