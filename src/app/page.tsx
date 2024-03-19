@@ -7,7 +7,7 @@ import { z } from "zod";
 import logo from "@/assets/logo.png";
 
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import { useContext } from "react";
 // import { AuthContext } from "@/contexts/AuthContext";
 import { Button, Input } from "@nextui-org/react";
