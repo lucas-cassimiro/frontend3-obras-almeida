@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import CreateUnipDropdown from '@/components/constructionRegister/CreateUnityDropdown';
 import Modal from '@/components/constructionRegister/ServicesModal';
 import { toast } from '@/components/ui/use-toast';
@@ -8,8 +8,7 @@ import { useSub } from '@/contexts/SubservicesContext';
 import { postConstruction } from '@/requests/teste';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect, use } from 'react';
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import React, { useState, useEffect } from 'react';
 
 function Teste() {
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: string[] }>({});
@@ -148,7 +147,7 @@ function Teste() {
     });
   };
 
-  const handleSubCheckbox = (macroId: string, subId: string, subName: string, name: string) => {
+  const handleSubCheckbox = (macroId: string, subId: string, subName:string ,name: string) => {
     console.log(':::::::', subId)
     setSelectedServices(prevState => {
       const isSelected = prevState[macroId]?.includes(subId);
@@ -202,189 +201,188 @@ function Teste() {
     setIsDisabled(true)
 
     setConstructionData((prevData: any) => {
-      if (prevData && prevData.unidades_repeticao) {
-        return {
-          ...prevData,
-          unidades_repeticao: [...prevData.unidades_repeticao, ...subArray]
-        };
-      } else {
-        return {
-          ...prevData,
-          unidades_repeticao: subArray
-        };
+      if (prevData &&
+        prevData.unidades_repeticao) {
+          return {
+            ...prevData,
+            unidades_repeticao: [...prevData.unidades_repeticao, ...subArray]
+          };
+        } else {
+          return {
+            ...prevData,
+            unidades_repeticao: subArray
+          };
+        }
+      });
+  
+      setSubArray([]);
+      setIsSaveEnabled(false);
+      setIsNextEnabled(true);
+    };
+  
+    const setIndividualUnityToArray = () => {
+      if (individualUnity.length < 1 || !quantityIndividualUnity) {
+        return alert('Preencha os campos')
       }
-    });
-
-    setSubArray([]);
-    setIsSaveEnabled(false);
-    setIsNextEnabled(true);
-  };
-
-  const setIndividualUnityToArray = () => {
-    if (individualUnity.length < 1 || !quantityIndividualUnity) {
-      return alert('Preencha os campos')
-    }
-    const individualUnityObj = {
-      unity: individualUnity,
-      locals: individualUnitNames
-    }
-    setSendToModal(individualUnityObj)
-    openModal()
-    console.log('individualArra:::', individualUnityObj)
-    setIndividualUnity('')
-    setQuantityIndividualUnity(0)
-    setIndividualUnitNames([])
-    setIndividualArray((prevData: any) => [...prevData, individualUnityObj]);
-  }
-  const teste = () => {
-    console.log('CONSTRUCTIONDATA::::', constructionData)
-  }
-
-  return (
-
-    <main className='w-screen h-screen flex flex-col items-center justify-center'>
-      {
-        isModalOpen &&
-        <div className="w-[1510px] h-screen flex justify-center" />
+      const individualUnityObj = {
+        unity: individualUnity,
+        locals: individualUnitNames
       }
-      <div className="flex flex-col items-center mt-10 gap-10">
-        <h1 className="text-3xl font-medium">Cadastro de Obras</h1>
-        <form className='flex flex-col gap-5'>
-          {step === 1 && (
-            <div className='flex flex-col gap-5'>
-              <Input
-                label="Nome da obra:"
-                variant="bordered"
-                isClearable
-                isRequired
-                type="text"
-                value={constructionName}
-                onChange={e => setConstructionName(e.target.value)}
-              />
-              <Input
-                label="CEP"
-                variant="bordered"
-                isClearable
-                isRequired
-                type="number"
-                value={constructionCep}
-                onChange={e => setConstructionCep(e.target.value)}
-              />
-              <Input
-                label="Cidade"
-                variant="bordered"
-                isClearable
-                isRequired
-                type="text"
-                value={constructionCity}
-                onChange={e => setConstructionCity(e.target.value)}
-              />
-              <div className='w-full flex flex-row justify-between'>
-                <div className='w-3/4 flex flex-col gap-1.5'>
-                  <Input
-                    label="Rua"
-                    variant="bordered"
-                    isClearable
-                    isRequired
+      setSendToModal(individualUnityObj)
+      openModal()
+      console.log('individualArra:::', individualUnityObj)
+      setIndividualUnity('')
+      setQuantityIndividualUnity(0)
+      setIndividualUnitNames([])
+      setIndividualArray((prevData: any) => [...prevData, individualUnityObj]);
+    }
+    const teste = () => {
+      console.log('CONSTRUCTIONDATA::::', constructionData)
+    }
+  
+    return (
+  
+      <main className='w-screen h-screen flex flex-col items-center justify-center'>
+        {
+          isModalOpen &&
+          <div className="w-full h-full absolute bg-black bg-opacity-50" />
+        }
+        <div className='flex flex-col h-full w-4/6 item-center pt-10 rounded-xl shadow-xl bg-white'>
+          <h1 className='text-center text-4xl font-semibold mb-11'>CADASTRO DE OBRAS</h1>
+          <form>
+            {step === 1 && (
+              <div className='flex flex-col px-8 rounded-2xl gap-4'>
+                <div className='w-full flex flex-col gap-1.5'>
+                  <label>Nome da obra:</label>
+                  <input
+                    className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
                     type="text"
-                    value={constructionStreet}
-                    onChange={e => setConstructionStreet(e.target.value)}
+                    placeholder="Nome da obra"
+                    value={constructionName}
+                    onChange={e => setConstructionName(e.target.value)}
                   />
                 </div>
-                <div className='w-1/5 flex flex-col gap-1.5'>
-                  <Input
-                    label="Numero"
-                    variant="bordered"
-                    isClearable
-                    isRequired
-                    type="number"
-                    value={constructionNumber}
-                    onChange={e => setConstructionNumber(e.target.value)}
+                <div className='w-full flex flex-col gap-1.5'>
+                  <label>CEP:</label>
+                  <input
+                    className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                    type="text"
+                    placeholder="CEP"
+                    value={constructionCep}
+                    onChange={e => setConstructionCep(e.target.value)}
                   />
+                </div>
+                <div className='w-full flex flex-col gap-1.5'>
+                  <label>Cidade:</label>
+                  <input
+                    className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                    type="text"
+                    placeholder="Cidade"
+                    value={constructionCity}
+                    onChange={e => setConstructionCity(e.target.value)}
+                  />
+                </div>
+                <div className='w-full flex flex-row justify-between'>
+                  <div className='w-3/4 flex flex-col gap-1.5'>
+                    <label>Rua:</label>
+                    <input
+                      className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                      type="text"
+                      placeholder="Nome da rua"
+                      value={constructionStreet}
+                      onChange={e => setConstructionStreet(e.target.value)}
+                    />
+                  </div>
+                  <div className='w-1/5 flex flex-col gap-1.5'>
+                    <label>Numero:</label>
+                    <input
+                      className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                      type="number"
+                      placeholder="Número"
+                      value={constructionNumber}
+                      onChange={e => setConstructionNumber(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className='w-full flex flex-col gap-1.5'>
+                  <label>Estado:</label>
+                  <input
+                    className='h-12 rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                    type="text"
+                    placeholder="Nome do estado"
+                    value={constructionState}
+                    onChange={e => setConstructionState(e.target.value)}
+                  />
+                </div>
+                <div className='w-full flex justify-end'>
+                  <button className='bg-green-500 px-5 py-2 rounded-sm' type="button" onClick={handleStepOne}>
+                    <p className='font-bold text-white'>AVANÇAR</p>
+                  </button>
                 </div>
               </div>
-              <Input
-                label="Estado"
-                variant="bordered"
-                isClearable
-                isRequired
-                type="text"
-                value={constructionState}
-                onChange={e => setConstructionState(e.target.value)}
-              />
-              <Button color="success" type="submit" onClick={handleStepOne}>
-                AVANÇAR
-              </Button>
-            </div>
-          )}
-          {step === 2 && (
-            <>
-              <div className='h-auto flex flex-col px-8 rounded-2xl gap-4'>
-                <div className='w-full flex flex-col gap-1.5'>
-                  <Input
-                    label="Quantas unidades de repetição?"
-                    variant="bordered"
-                    isClearable
-                    isRequired
-                    type="number"
-                    value={houseQuantity}
-                    onChange={e => setHouseQuantity(parseInt(e.target.value))}
+            )}
+            {step === 2 && (
+              <>
+                <div className='h-auto flex flex-col px-8 rounded-2xl gap-4'>
+                  <div className='w-full flex flex-col gap-1.5'>
+                    <label>Quantas unidades de repetição?</label>
+                    <input
+                      className='rounded-sm p-2 placeholder-gray-400 border border-gray-700'
+                      type="number"
+                      value={houseQuantity}
+                      onChange={e => setHouseQuantity(parseInt(e.target.value))}
+                    />
+                  </div>
+                  <Modal isOpen={isModalOpen} onClose={closeModal} sub={subservice} macro={data} sendToModal={sendToModal} setUnit={setUnit}
                   />
-                  {/* <input
-                    className='rounded-sm p-2 placeholder-gray-400 border border-gray-700'
-                    type="number"
-                    value={houseQuantity}
-                    onChange={e => setHouseQuantity(parseInt(e.target.value))}
-                  /> */}
-                </div>
-                <Modal isOpen={isModalOpen} onClose={closeModal} sub={subservice} macro={data} sendToModal={sendToModal} setUnit={setUnit}
-                />
-                {houseQuantity >= 1 &&
-                  [...Array(houseQuantity)].map((_, index) => (
-                    <div className='gap-0' key={index}>
-                      <input
-                        className='h-12 p-2 placeholder-gray-400 border rounded-2xl'
-                        placeholder={`Nome da unidade ${index + 1}`}
-                        type="text"
-                        value={unitNames[index] || ""}
-                        onChange={e => {
-                          const updatedNames = [...unitNames];
-                          updatedNames[index] = e.target.value;
-                          setUnitNames(updatedNames);
-                        }}
-                      />
-                    </div>
-                  ))}
-                <div className='w-full flex flex-col gap-1.5'>
-                  <label>Número de Locais da Unidade de Repetição:</label>
-                  <input
-                    placeholder='Quantidade de locais'
-                    className='h-12 p-2 placeholder-gray-400 border rounded-2xl'
-                    type="number"
-                    value={roomQuantity}
-                    onChange={e => setRoomQuantity(parseInt(e.target.value))}
-                  />
-                  {roomQuantity >= 1 &&
-                    [...Array(roomQuantity)].map((_, index) => (
-                      <div key={index}>
+                  {houseQuantity >= 1 &&
+                    [...Array(houseQuantity)].map((_, index) => (
+                      <div className='gap-0' key={index}>
                         <input
-                          placeholder={`Nome do local ${index + 1}`}
-                          className='h-12 p-2 placeholder-gray-400 border rounded-2xl'
+                          key={index}
+                          className='h-12 p-2 placeholder-gray-400 border border-gray-700'
+                          placeholder={`Nome da unidade ${index + 1}`}
                           type="text"
-                          value={unitRoomNames[index] || ""}
+                          value={unitNames[index] || ""}
                           onChange={e => {
-                            const updatedNames = [...unitRoomNames];
+                            const updatedNames = [...unitNames];
                             updatedNames[index] = e.target.value;
-                            setUnitRoomNames(updatedNames);
+                            setUnitNames(updatedNames);
                           }}
                         />
                       </div>
                     ))}
-                </div>
-                <div>
-                  <CreateUnipDropdown
-                    children={
-                      <div className="w-full flex flex-col items-center justify-center bg-slate-100 p-4 rounded-sm mb-10 ">
+                  <div className='w-full flex flex-col gap-1.5'>
+                    <button type='button' onClick={teste}><p>mjkhbgvbjnmkjnbh</p></button>
+                    <label>Número de Locais da Unidade de Repetição:</label>
+                    <input
+                      placeholder='Nome do local'
+                      className='h-12 p-2 placeholder-gray-400 border border-gray-700'
+                      type="number"
+                      value={roomQuantity}
+                      onChange={e => setRoomQuantity(parseInt(e.target.value))}
+                    />
+                    {roomQuantity >= 1 &&
+                      [...Array(roomQuantity)].map((_, index) => (
+                        <div key={index}>
+                          <input
+                            placeholder={`Nome do local ${index + 1}`}
+                            className='h-12 p-2 placeholder-gray-400 border border-gray-700'
+                            type="text"
+                            value={unitRoomNames[index] || ""}
+                            onChange={e => {
+                              const updatedNames = [...unitRoomNames];
+                              updatedNames[index] = e.target.value;
+                              setUnitRoomNames(updatedNames);
+                            }}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                  <div>
+                    <CreateUnipDropdown>
+                    <div className="w-full flex flex-col items-center justify-center bg-slate-100 p-4
+                        rounded-sm mb-10 ">
                         <div className="w-full flex gap-4 items-center">
                           <div className="gap flex gap-2 items-center">
                             <label>Nome da unidade:</label>
@@ -409,6 +407,7 @@ function Teste() {
                             quantityIndividualUnity >= 1 &&
                             [...Array(quantityIndividualUnity)].map((_, index) => (
                               <input
+                                key={index}
                                 className='h-6 p-2 placeholder-gray-400 border border-gray-700 flex-wrap'
                                 placeholder={`Nome da unidade ${index + 1}`}
                                 type="text"
@@ -426,8 +425,7 @@ function Teste() {
                           <button onClick={setIndividualUnityToArray} className="bg-green-500 w-32 h-8 rounded-sm" type="button"><p className="font-bold text-white">SUB-SERVIÇO</p></button>
                         </div>
                       </div>
-                    }
-                  />
+                    </CreateUnipDropdown>
 
                 </div>
                 <div className='w-full flex justify-end'>
@@ -448,6 +446,7 @@ function Teste() {
                   {data.map((dataItem: any) => (
                     <div key={dataItem.id} className="mb-2">
                       <input
+                        key={index}
                         type="checkbox"
                         value={dataItem.id}
                         onChange={() => handleMacroCheckbox(dataItem.id)}
@@ -458,9 +457,9 @@ function Teste() {
                       {selectedServices[dataItem.id] && subservice
                         .filter((subItem: any) => subItem.macro_id === dataItem.id)
                         .map((subItem: any) => (
-                          <>
                             <div key={subItem.id} className="ml-4 mt-2">
                               <input
+                                key={index}
                                 type="checkbox"
                                 value={subItem.id}
                                 onChange={() => handleSubCheckbox(dataItem.id, subItem.id, subItem.subservice, constructionData.unitRooms[index])}
@@ -481,7 +480,6 @@ function Teste() {
                                 </>
                               )}
                             </div>
-                          </>
                         ))}
                     </div>
                   ))}
@@ -507,3 +505,4 @@ function Teste() {
 }
 
 export default Teste;
+  

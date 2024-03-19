@@ -9,7 +9,7 @@ import logo from "@/assets/logo.png";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+// import { AuthContext } from "@/contexts/AuthContext";
 import { Button, Input } from "@nextui-org/react";
 
 const signInFormSchema = z.object({
@@ -41,12 +41,12 @@ export default function Login() {
     resolver: zodResolver(signInFormSchema),
   });
 
-  const { signIn } = useContext(AuthContext);
+  // const { signIn } = useContext(AuthContext);
 
-  async function handleSignIn(data: signInFormData) {
-    await signIn(data);
-    reset();
-  }
+  // async function handleSignIn(data: signInFormData) {
+  //   await signIn(data);
+  //   reset();
+  // }
 
   const onError: SubmitErrorHandler<signInFormData> = (errors) =>
     console.log(errors);
@@ -57,7 +57,7 @@ export default function Login() {
         <div className="w-[30rem] h-[16rem] p-[2.1875rem] bg-[#181920] rounded-[10px] max-h-[16rem]">
           <form
             className="flex flex-col w-full gap-5"
-            onSubmit={handleSubmit(handleSignIn, onError)}
+            // onSubmit={handleSubmit(handleSignIn, onError)}
           >
             {/* <Image src={logo} alt="Logo da empresa" className="w-[100px] h-[200px]"/> */}
             <Input
