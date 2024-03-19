@@ -38,7 +38,7 @@ export default function HomeLayout({
 
   return (
     <section className="flex relative">
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <NextUiProvider>
           <TanstackProvider>
             <MacroProvider>
@@ -50,7 +50,7 @@ export default function HomeLayout({
             </MacroProvider>
           </TanstackProvider>
         </NextUiProvider>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </section>
   );
 }
