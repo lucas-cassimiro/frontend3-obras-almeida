@@ -387,13 +387,25 @@ function Teste() {
                       <div className="w-full flex flex-col items-center justify-center bg-slate-100 p-4 rounded-sm mb-10 ">
                         <div className="w-full flex gap-4 items-center">
                           <div className="gap flex gap-2 items-center">
-                            <label>Nome da unidade:</label>
-                            <input className='h-8 p-2 placeholder-gray-400 border border-gray-700' type="text" value={individualUnity} onChange={(e) => setIndividualUnity(e.target.value)} />
+                            <Input
+                              label="Nome da unidade"
+                              variant="bordered"
+                              isClearable
+                              isRequired
+                              type="text"
+                              value={individualUnity}
+                              onChange={(e) => setIndividualUnity(e.target.value)}
+                            />
+                            {/* <label>Nome da unidade:</label>
+                            <input className='h-8 p-2 placeholder-gray-400 border border-gray-700' 
+                            type="text" value={individualUnity} onChange={(e) => setIndividualUnity(e.target.value)} /> */}
                           </div>
                           <div className="gap flex gap-2 items-center">
-                            <label>Quantidade de locais:</label>
-                            <input
-                              className='h-8 w-10 p-2 placeholder-gray-400 border border-gray-700'
+                            <Input
+                              label="Quantidade de locais"
+                              variant="bordered"
+                              isClearable
+                              isRequired
                               type="text"
                               value={quantityIndividualUnity}
                               onChange={(e) => {
@@ -402,15 +414,38 @@ function Teste() {
                               }}
                             />
 
+                            {/* <label>Quantidade de locais:</label>
+                            <input
+                              className='h-8 w-10 p-2 placeholder-gray-400 border border-gray-700'
+                              type="text"
+                              value={quantityIndividualUnity}
+                              onChange={(e) => {
+                                const newValue = e.target.value.trim() === '' ? 0 : Number.parseInt(e.target.value);
+                                setQuantityIndividualUnity(newValue);
+                              }}
+                            /> */}
+
                           </div>
                         </div>
                         <div className="w-full mt-4 flex gap-2 flex-wrap items-center justify-center">
                           {
                             quantityIndividualUnity >= 1 &&
                             [...Array(quantityIndividualUnity)].map((_, index) => (
-                              <input
-                                className='h-6 p-2 placeholder-gray-400 border border-gray-700 flex-wrap'
-                                placeholder={`Nome da unidade ${index + 1}`}
+                              <Input
+                              label="Quantidade de locais"
+                              variant="bordered"
+                              isClearable
+                              isRequired
+                              type="text"
+                              value={quantityIndividualUnity}
+                              onChange={(e) => {
+                                const newValue = e.target.value.trim() === '' ? 0 : Number.parseInt(e.target.value);
+                                setQuantityIndividualUnity(newValue);
+                              }}
+                            />
+                            
+                              <Input
+                              label={`Nome da unidade ${index + 1}`}
                                 type="text"
                                 value={individualUnitNames[index] || ""}
                                 onChange={e => {
@@ -423,7 +458,9 @@ function Teste() {
                         </div>
 
                         <div className="w-full flex justify-end">
-                          <button onClick={setIndividualUnityToArray} className="bg-green-500 w-32 h-8 rounded-sm" type="button"><p className="font-bold text-white">SUB-SERVIÇO</p></button>
+                          <button onClick={setIndividualUnityToArray} 
+                          className="bg-green-500 w-32 h-8 rounded-sm" 
+                          type="button"><p className="font-bold text-white">SUB-SERVIÇO</p></button>
                         </div>
                       </div>
                     }
