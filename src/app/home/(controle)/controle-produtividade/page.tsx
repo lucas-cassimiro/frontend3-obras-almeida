@@ -1,18 +1,11 @@
 "use client";
 
-import { useSub } from "@/contexts/SubservicesContext";
 import { getWorksAddress } from "@/services/api";
 import { WorkData } from "@/types/WorkType";
 import { Button, Select, SelectItem, Input } from "@nextui-org/react";
 
-import { useMutation } from "@tanstack/react-query";
-
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-// const mutation = useMutation({
-//   mutationFn: () =>
-// })
 
 interface RowData {
   selectedPlace: any;
@@ -67,8 +60,8 @@ export default function ProductivityController() {
       }
 
       const data = await response.json();
-      console.log(data);
       setSelectData(data);
+
       toast.success("Dados carregados com sucesso!");
     } catch (error) {
       console.error(error);
@@ -77,6 +70,7 @@ export default function ProductivityController() {
 
   const updateRowData = (
     index: number,
+    employees: any,
     selectedPlace: string,
     selectedAmbient: string,
     selectedMacroService: string,
@@ -87,6 +81,7 @@ export default function ProductivityController() {
     const newDataObject = {
       selectValue,
       dateValue,
+      employees,
       selectedPlace,
       selectedAmbient,
       selectedMacroService,
@@ -113,12 +108,17 @@ export default function ProductivityController() {
     try {
       const url = "http://localhost:3333/productivityControl/";
 
+      const modifiedRowData = rowData.map((row: any) => {
+        const { selectedMacroService, ...rowDataWithoutMacroService } = row;
+        return rowDataWithoutMacroService;
+      });
+
       const request = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(rowData),
+        body: JSON.stringify(modifiedRowData),
       });
 
       if (!request.ok) {
@@ -143,6 +143,7 @@ export default function ProductivityController() {
     updateRowData: (
       index: number,
       selectedPlace: string,
+      employees: any,
       selectedAmbient: string,
       selectedMacroService: string,
       selectedSubServiceId: number,
@@ -155,10 +156,9 @@ export default function ProductivityController() {
     const [selectedMacroService, setSelectedMacroService] =
       useState<string>("");
     const [selectedSubServiceId, setSelectedSubServiceId] = useState<number>(0);
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(0);
-
     const [quantity, setQuantity] = useState<string>("");
     const [weight, setWeight] = useState<string>("");
+    const [employeeArray, setEmployeeArray] = useState<any[]>([]);
 
     const handleSelectPlace = (event: ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
@@ -192,9 +192,15 @@ export default function ProductivityController() {
       setWeight(value);
     };
 
+    useEffect(() => {
+      setEmployeeArray((prevData) => [...prevData, employee]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleUpdateRowData = () => {
       updateRowData(
         index,
+        employeeArray[index].employees.id,
         selectedPlace,
         selectedAmbient,
         selectedMacroService,

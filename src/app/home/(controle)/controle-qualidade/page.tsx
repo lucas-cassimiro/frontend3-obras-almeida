@@ -44,15 +44,11 @@ type ProductivityData = {
 
 export default function QualityControl() {
   const [selectValue, setSelectValue] = useState("");
-  console.log(selectValue);
   const [dateValue, setDateValue] = useState("");
-  console.log(dateValue);
 
   const [productivityData, setProductivityData] = useState<ProductivityData[]>(
     []
   );
-
-  console.log(productivityData);
 
   const [works, setWorks] = useState<WorkData[]>([]);
 
@@ -73,7 +69,7 @@ export default function QualityControl() {
     setDateValue(event.target.value);
   };
 
-  const getDados = async (event: MouseEventHandler<HTMLButtonElement>) => {
+  const getDados = async () => {
     // event.preventDefault();
 
     try {
@@ -88,7 +84,6 @@ export default function QualityControl() {
       }
 
       const data = await response.json();
-      console.log(data);
       setProductivityData(data);
       toast.success("Dados carregados com sucesso!");
     } catch (error) {
@@ -122,7 +117,6 @@ export default function QualityControl() {
 
             <input type="date" value={dateValue} onChange={handleChangeDate} />
           </div>
-          {/* ta dando erro mas funciona */}
           <Button
             color="success"
             type="submit"
