@@ -125,7 +125,7 @@ function Teste() {
       return
     }
     if(constructionNumber.length <= 0){
-      alert('preencha todos os campos')
+      alert('preencha todos os cammpos')
       return
     }
     if(constructionCity.length <= 0){
