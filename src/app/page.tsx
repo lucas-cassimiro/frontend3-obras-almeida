@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useContext } from "react";
 // import { AuthContext } from "@/contexts/AuthContext";
 import { Button, Input } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 const signInFormSchema = z.object({
   username: z.string().nonempty("O nome de usuário é obrigatório."),
@@ -41,12 +42,17 @@ export default function Login() {
     resolver: zodResolver(signInFormSchema),
   });
 
+  const router = useRouter()
+
   // const { signIn } = useContext(AuthContext);
 
   // async function handleSignIn(data: signInFormData) {
   //   await signIn(data);
   //   reset();
   // }
+  const teste = () => {
+    router.push('/home')
+  }
 
   const onError: SubmitErrorHandler<signInFormData> = (errors) =>
     console.log(errors);
@@ -85,7 +91,7 @@ export default function Login() {
             />
             <Button
               isLoading={isSubmitting}
-              type="submit"
+              onClick={teste}
               className="bg-[#5568FE] text-white"
             >
               Entrar

@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
+
 function Teste() {
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: string[] }>({});
   const [constructionData, setConstructionData] = useState<any>({});
@@ -62,7 +63,6 @@ function Teste() {
   const mutation = useMutation({
     mutationFn: (formData: any) => postConstruction(formData),
     onSuccess: (data) => {
-      console.log(data)
       toast({
         title: "Mensagem",
         description: data.message,
@@ -87,7 +87,7 @@ function Teste() {
   }, [isDisabled]);
 
   const proxima = () => {
-    console.log('proxima::', selectedServices)
+    setSelectedServices({})
     if (index + 1 === constructionData.unitRooms.length) {
       setStepToStep(false)
       sendToBack()
@@ -104,10 +104,35 @@ function Teste() {
   const sendToBack = () => {
     // mutation.mutate(constructionData)
     mountBody(constructionData)
-    router.push('/home/cadastro/obras/newpage')
+    router.push('/home/cadastro/obras/subservicos')
   }
 
   const handleStepOne = () => {
+    if(constructionName.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    if(constructionCep.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    if(constructionStreet.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    if(constructionState.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    if(constructionNumber.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    if(constructionCity.length <= 0){
+      alert('preencha todos os campos')
+      return
+    }
+    
     const updatedData = {
       ...constructionData,
       name: constructionName,
@@ -148,7 +173,6 @@ function Teste() {
   };
 
   const handleSubCheckbox = (macroId: string, subId: string, subName:string ,name: string) => {
-    console.log(':::::::', subId)
     setSelectedServices(prevState => {
       const isSelected = prevState[macroId]?.includes(subId);
       setSubId((prevArray: any) => {
@@ -193,11 +217,11 @@ function Teste() {
         };
         return updatedServices;
       }
+
     });
   };
 
   const handleSaveData = () => {
-    console.log('aqui é selected::', selectedServices)
     setIsDisabled(true)
 
     setConstructionData((prevData: any) => {
@@ -230,24 +254,19 @@ function Teste() {
       }
       setSendToModal(individualUnityObj)
       openModal()
-      console.log('individualArra:::', individualUnityObj)
       setIndividualUnity('')
       setQuantityIndividualUnity(0)
       setIndividualUnitNames([])
       setIndividualArray((prevData: any) => [...prevData, individualUnityObj]);
     }
-    const teste = () => {
-      console.log('CONSTRUCTIONDATA::::', constructionData)
-    }
   
     return (
-  
       <main className='w-screen h-screen flex flex-col items-center justify-center'>
         {
           isModalOpen &&
           <div className="w-full h-full absolute bg-black bg-opacity-50" />
         }
-        <div className='flex flex-col h-full w-4/6 item-center pt-10 rounded-xl shadow-xl bg-white'>
+        <div className='flex flex-col h-auto w-4/6 item-center pt-10 rounded-xl shadow-xl bg-white'>
           <h1 className='text-center text-4xl font-semibold mb-11'>CADASTRO DE OBRAS</h1>
           <form>
             {step === 1 && (
@@ -315,7 +334,7 @@ function Teste() {
                   />
                 </div>
                 <div className='w-full flex justify-end'>
-                  <button className='bg-green-500 px-5 py-2 rounded-sm' type="button" onClick={handleStepOne}>
+                  <button className='bg-green-500 px-5 py-2 rounded-sm mb-4' type="button" onClick={handleStepOne}>
                     <p className='font-bold text-white'>AVANÇAR</p>
                   </button>
                 </div>
@@ -335,12 +354,13 @@ function Teste() {
                   </div>
                   <Modal isOpen={isModalOpen} onClose={closeModal} sub={subservice} macro={data} sendToModal={sendToModal} setUnit={setUnit}
                   />
+                  <div className='flex flex-wrap gap-2 overflow-auto max-h-60'>
                   {houseQuantity >= 1 &&
                     [...Array(houseQuantity)].map((_, index) => (
                       <div className='gap-0' key={index}>
                         <input
                           key={index}
-                          className='h-12 p-2 placeholder-gray-400 border border-gray-700'
+                          className='h-8 p-2 placeholder-gray-400 border border-gray-700'
                           placeholder={`Nome da unidade ${index + 1}`}
                           type="text"
                           value={unitNames[index] || ""}
@@ -352,8 +372,8 @@ function Teste() {
                         />
                       </div>
                     ))}
+                  </div>
                   <div className='w-full flex flex-col gap-1.5'>
-                    <button type='button' onClick={teste}><p>mjkhbgvbjnmkjnbh</p></button>
                     <label>Número de Locais da Unidade de Repetição:</label>
                     <input
                       placeholder='Nome do local'
@@ -362,12 +382,13 @@ function Teste() {
                       value={roomQuantity}
                       onChange={e => setRoomQuantity(parseInt(e.target.value))}
                     />
+                  <div className='flex flex-wrap gap-2 overflow-auto max-h-60'>
                     {roomQuantity >= 1 &&
                       [...Array(roomQuantity)].map((_, index) => (
                         <div key={index}>
                           <input
                             placeholder={`Nome do local ${index + 1}`}
-                            className='h-12 p-2 placeholder-gray-400 border border-gray-700'
+                            className='h-8 p-2 placeholder-gray-400 border border-gray-700'
                             type="text"
                             value={unitRoomNames[index] || ""}
                             onChange={e => {
@@ -379,8 +400,11 @@ function Teste() {
                         </div>
                       ))}
                   </div>
+                  </div>
                   <div>
-                    <CreateUnipDropdown>
+                    <CreateUnipDropdown
+                      title={'Criar unidade individual'}
+                    >
                     <div className="w-full flex flex-col items-center justify-center bg-slate-100 p-4
                         rounded-sm mb-10 ">
                         <div className="w-full flex gap-4 items-center">
@@ -467,18 +491,6 @@ function Teste() {
                                 className="mr-2"
                               />
                               <label>{subItem.subservice}</label>
-                              {selectedServices[dataItem.id].includes(subItem.id) && (
-                                <>
-                                  <div>
-                                    <label className="ml-4">Peso:</label>
-                                    <input type="number" className="ml-1 w-14 border border-gray-400 rounded-sm px-2 py-1" />
-                                  </div>
-                                  <div>
-                                    <label className="ml-4">Quantidade:</label>
-                                    <input type="number" className="ml-1 w-14 border border-gray-400 rounded-sm px-2 py-1" />
-                                  </div>
-                                </>
-                              )}
                             </div>
                         ))}
                     </div>
@@ -500,7 +512,7 @@ function Teste() {
 
       </div>
 
-    </main>
+      </main>
   );
 }
 
