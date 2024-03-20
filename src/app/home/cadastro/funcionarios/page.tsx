@@ -17,9 +17,26 @@ import { formatDate } from "@/utils/formatDate";
 const createEmployeeFormSchema = z.object({
   employee: z.object({
     ra: z.string().nonempty("O RA é obrigatório."),
-    first_name: z.string().nonempty("O nome é obrigatório."),
-    last_name: z.string().nonempty("O sobrenome é obrigatório."),
-    alternative_name: z.string().nonempty("O apelido é obrigatório."),
+    first_name: z
+      .string()
+      .nonempty("O nome é obrigatório.")
+      .regex(/^[A-Za-z]+$/i, "Somente letras são permitidas.")
+      .transform((name) => {
+        return name.trim().replace(/^\w/, (c) => c.toLocaleUpperCase());
+      }),
+    last_name: z
+      .string()
+      .nonempty("O sobrenome é obrigatório.")
+      .regex(/^[A-Za-z]+$/i, "Somente letras são permitidas.")
+      .transform((name) => {
+        return name.trim().replace(/^\w/, (c) => c.toLocaleUpperCase());
+      }),
+    alternative_name: z
+      .string()
+      .nonempty("O apelido é obrigatório.")
+      .transform((name) => {
+        return name.trim().replace(/^\w/, (c) => c.toLocaleUpperCase());
+      }),
     admission_date: z.string().nonempty("A data de admissão é obrigatória."),
     salary: z.coerce.number().min(1, "Campo obrigatório."),
     lunch_cost: z.coerce.number().min(1, "Campo obrigatório."),
@@ -34,6 +51,28 @@ const createEmployeeFormSchema = z.object({
 });
 
 type createEmployeeFormData = z.infer<typeof createEmployeeFormSchema>;
+
+const dinner = [
+  {
+    label: "Sim",
+    value: "Sim",
+  },
+  {
+    label: "Não",
+    value: "Não",
+  },
+];
+
+const lunch = [
+  {
+    label: "Sim",
+    value: "Sim",
+  },
+  {
+    label: "Não",
+    value: "Não",
+  },
+];
 
 export default function Employee() {
   const {
@@ -87,7 +126,7 @@ export default function Employee() {
 
       console.log(requestData);
 
-      const url = "http://localhost:3333/employees";
+      const url = "http://191.101.70.229:3333/employees";
 
       const request = await fetch(url, {
         method: "POST",
@@ -134,6 +173,8 @@ export default function Employee() {
               errorMessage={errors.employee?.ra?.message}
               isClearable
               isRequired
+              minLength={8}
+              maxLength={8}
             />
             <Input
               label="Nome"
@@ -189,20 +230,20 @@ export default function Employee() {
             <Input
               type="text"
               label="Alimentação"
-              {...register("employee.salary")}
+              {...register("employee.lunch_cost")}
               variant="bordered"
-              isInvalid={errors?.employee?.salary ? true : false}
-              errorMessage={errors?.employee?.salary?.message}
+              isInvalid={errors?.employee?.lunch_cost ? true : false}
+              errorMessage={errors?.employee?.lunch_cost?.message}
               isClearable
               isRequired
             />
             <Input
               type="text"
               label="Transporte"
-              {...register("employee.salary")}
+              {...register("employee.ticket_cost")}
               variant="bordered"
-              isInvalid={errors?.employee?.salary ? true : false}
-              errorMessage={errors?.employee?.salary?.message}
+              isInvalid={errors?.employee?.ticket_cost ? true : false}
+              errorMessage={errors?.employee?.ticket_cost?.message}
               isClearable
               isRequired
             />
@@ -261,6 +302,38 @@ export default function Employee() {
                   variant="bordered"
                 >
                   {position.name}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              {...register("employee.dinner")}
+              variant="bordered"
+              label="Janta"
+              isRequired
+            >
+              {dinner.map((dinner) => (
+                <SelectItem
+                  value={dinner.value}
+                  key={dinner.label}
+                  variant="bordered"
+                >
+                  {dinner.value}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              {...register("employee.lunch")}
+              variant="bordered"
+              label="Almoço"
+              isRequired
+            >
+              {lunch.map((lunch) => (
+                <SelectItem
+                  value={lunch.value}
+                  key={lunch.value}
+                  variant="bordered"
+                >
+                  {lunch.label}
                 </SelectItem>
               ))}
             </Select>

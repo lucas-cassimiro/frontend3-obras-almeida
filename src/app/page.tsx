@@ -7,11 +7,10 @@ import { z } from "zod";
 import logo from "@/assets/logo.png";
 
 import Image from "next/image";
-// import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useContext } from "react";
-// import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/contexts/AuthContext";
 import { Button, Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
 
 const signInFormSchema = z.object({
   username: z.string().nonempty("O nome de usuário é obrigatório."),
@@ -42,16 +41,11 @@ export default function Login() {
     resolver: zodResolver(signInFormSchema),
   });
 
-  const router = useRouter()
+  const { signIn } = useContext(AuthContext);
 
-  // const { signIn } = useContext(AuthContext);
-
-  // async function handleSignIn(data: signInFormData) {
-  //   await signIn(data);
-  //   reset();
-  // }
-  const teste = () => {
-    router.push('/home')
+  async function handleSignIn(data: signInFormData) {
+    await signIn(data);
+    reset();
   }
 
   const onError: SubmitErrorHandler<signInFormData> = (errors) =>
@@ -63,7 +57,7 @@ export default function Login() {
         <div className="w-[30rem] h-[16rem] p-[2.1875rem] bg-[#181920] rounded-[10px] max-h-[16rem]">
           <form
             className="flex flex-col w-full gap-5"
-            // onSubmit={handleSubmit(handleSignIn, onError)}
+            onSubmit={handleSubmit(handleSignIn, onError)}
           >
             {/* <Image src={logo} alt="Logo da empresa" className="w-[100px] h-[200px]"/> */}
             <Input
@@ -91,7 +85,7 @@ export default function Login() {
             />
             <Button
               isLoading={isSubmitting}
-              onClick={teste}
+              type="submit"
               className="bg-[#5568FE] text-white"
             >
               Entrar
