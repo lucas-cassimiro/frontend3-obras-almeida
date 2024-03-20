@@ -85,7 +85,7 @@ export default function QualityControl() {
   const getDados = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/productivityControl/?select=${workId}&data=${presenceDate}`
+        `http://191.101.70.229:3333/productivityControl/?select=${workId}&data=${presenceDate}`
       );
 
       if (!response.ok) {
@@ -127,7 +127,7 @@ export default function QualityControl() {
     console.log(dadosRegistrados);
 
     try {
-      const url = "http://localhost:3333/qualityControl";
+      const url = "http://191.101.70.229:3333/qualityControl";
 
       const response = await fetch(url, {
         method: "POST",

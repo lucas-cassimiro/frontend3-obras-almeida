@@ -50,6 +50,7 @@ export default function Login() {
   //   await signIn(data);
   //   reset();
   // }
+  
   const teste = () => {
     router.push('/home')
   }
