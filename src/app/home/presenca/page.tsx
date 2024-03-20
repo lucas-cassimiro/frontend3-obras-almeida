@@ -70,7 +70,7 @@ export default function PresenceControl() {
 
       console.log(requestData);
 
-      const url = "http://localhost:3333/presence";
+      const url = "http://191.101.70.229:3333/presence";
 
       const request = await fetch(url, {
         method: "POST",

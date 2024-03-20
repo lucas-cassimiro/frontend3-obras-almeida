@@ -75,7 +75,7 @@ export default function Users() {
 
       const { confirm_password, ...postData } = data;
 
-      const url = "http://localhost:3333/users";
+      const url = "http://191.101.70.229:3333/users";
 
       const request = await fetch(url, {
         method: "POST",

@@ -102,7 +102,7 @@ export default function ProductivityController() {
   const getDados = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/presence/?select=${workId}&data=${presenceDate}`
+        `http://191.101.70.229:3333/presence/?select=${workId}&data=${presenceDate}`
       );
 
       if (!response.ok) {
@@ -159,7 +159,7 @@ export default function ProductivityController() {
 
   const onSubmit = async () => {
     try {
-      const url = "http://localhost:3333/productivityControl/";
+      const url = "http://191.101.70.229:3333/productivityControl";
 
       const modifiedRowData = rowData.map((row: any) => {
         const { selectedMacroService, ...rowDataWithoutMacroService } = row;
@@ -181,6 +181,7 @@ export default function ProductivityController() {
       }
 
       toast.success("Controle de produtividade cadastrado.");
+      
     } catch (error) {
       console.log(error);
     }

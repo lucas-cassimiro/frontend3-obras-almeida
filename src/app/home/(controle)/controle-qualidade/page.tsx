@@ -63,8 +63,6 @@ export default function QualityControl() {
   const [result, setResult] = useState<string[]>([]);
   const [action, setAction] = useState<string[]>([]);
 
-  console.log(productivityData);
-
   useEffect(() => {
     async function fetchData() {
       const data = await getWorksAddress();
@@ -85,7 +83,7 @@ export default function QualityControl() {
   const getDados = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/productivityControl/?select=${workId}&data=${presenceDate}`
+        `http://191.101.70.229:3333/productivityControl/?select=${workId}&data=${presenceDate}`
       );
 
       if (!response.ok) {
@@ -118,16 +116,16 @@ export default function QualityControl() {
   };
 
   const handleRegisterControl = async () => {
-    const dadosRegistrados = productivityData.map((data, index) => ({
-      id: data.id,
-      resultado: result[index],
-      acao: action[index],
-    }));
-
-    console.log(dadosRegistrados);
-
     try {
-      const url = "http://localhost:3333/qualityControl";
+      const dadosRegistrados = productivityData.map((data, index) => ({
+        id: data.id,
+        resultado: result[index],
+        acao: action[index],
+      }));
+
+      console.log(dadosRegistrados);
+
+      const url = "http://191.101.70.229:3333/qualityControl";
 
       const response = await fetch(url, {
         method: "POST",
