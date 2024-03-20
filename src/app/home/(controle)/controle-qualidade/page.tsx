@@ -238,7 +238,7 @@ export default function QualityControl() {
               </tbody>
             </table>
             <Button
-              type="button"
+              type="submit"
               color="success"
               className="mt-10 w-60 text-base font-medium"
               onClick={handleRegisterControl}
